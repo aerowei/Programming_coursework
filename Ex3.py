@@ -93,6 +93,5 @@ def click_btn(let):
         if lives < 0:   # Losing condition
             print('You lose!')
             window.destroy()
-
 print(hgword)
 window.mainloop()
