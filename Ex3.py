@@ -3,6 +3,7 @@
 
 import random
 from tkinter import *
+from tkinter import messagebox
 
 # Setting up the tkinter window.
 window = Tk()
@@ -13,20 +14,20 @@ window.geometry("800x800")
 win_count = 0
 lives = 8
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] # List with ASCII uppercase letters.
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']  # List with ASCII uppercase letters.
 
 # Creating a list of hangman images, and placing the first image.
 hg_list = []
-for i in range(1,10):
+for i in range(1, 10):
     s = "hg" + str(i) + ".png"
     hg_list.append(PhotoImage(file=s))
-hg_img = Label(window,image=hg_list[0])
-hg_img.place(x = 100, y = 100)
+hg_img = Label(window, image=hg_list[0])
+hg_img.place(x=100, y=100)
 img_nr = 0 # Indicate which picture number it is now.
 
 # Open the file wordlist.txt for reading and read the first line, removing all the whitespaces at beginning and end and
 # turning all characters to lowercase
-file = open(r'wordlist.txt','r')
+file = open(r'wordlist.txt', 'r')
 words = []
 word = file.readline().strip().lower()
 
@@ -48,8 +49,8 @@ hgword = ranword()
 lbl_list = []
 x_lbl = 200
 for i in range(len(hgword)):
-    lbl_list.append(Label(window,text='_',font=('Arial',40,'bold')))
-    lbl_list[-1].place(x=x_lbl,y=300)
+    lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
+    lbl_list[-1].place(x=x_lbl, y=300)
     x_lbl += 50
 
 # Create buttons
@@ -66,7 +67,7 @@ y_btn = 400
 btn_lst = [] # Actual list containing each button.
 # This loop creates each button, adds it to the list and then places them on the screen.
 for alpha in alphabet:
-    btn_lst.append(Button(window, text=alpha, font=('Arial',15,'bold'),\
+    btn_lst.append(Button(window, text=alpha, font=('Arial',15,'bold'),
                           command=lambda c=alpha.lower(): click_btn(c))) # Using c=alpha to store it for each iteration.
     btn_lst[-1].place(x=x_btn,y=y_btn)
     x_btn += 40
@@ -91,6 +92,7 @@ def click_btn(let):
             if btn["text"].lower() == let:
                 btn["state"] = DISABLED
         if win_count == len(hgword):    # Winning condition.
+            messagebox.askyesno(title="You won!", message="You won, do you want to retry?")
             print('You win!')
             window.destroy()
     else:
@@ -101,12 +103,15 @@ def click_btn(let):
             if btn["text"].lower() == let:
                 btn["state"] = DISABLED
         if lives == 0:   # Losing condition
-            print('You lose!')
+            if messagebox.askyesno(title="You lost!", message="You lost, do you want to retry?") == False:
+                window.destroy()
+            else:
+                print("test")
+           # print('You lose!')
           #  window.destroy()
 
 
 def hg_place():
-    global lives
     global hg_list
     global hg_img
     global img_nr
@@ -114,6 +119,22 @@ def hg_place():
     img_nr += 1
     if img_nr < 9:
         hg_img.configure(image = hg_list[img_nr])
+
+def retry():
+    global lives
+    global win_count
+    global hgword
+    global lbl_list
+    global btn_lst
+
+    hgword = ranword()
+    lives = 8
+    win_count = 0
+    i = 0
+    for i in range (len(hgword)):
+        lbl_list[i].configure(text="_")
+    for btn in btn_lst:
+        btn["state"] = NORMAL
 
 
 print(hgword)
