@@ -79,9 +79,10 @@ for alpha in alphabet:
 # add win_count if letter is in the word or subtract lives if the letter isn't. Clicking on the button will also
 # disable it.
 def click_btn(let):
-    i = 0
     global win_count
     global lives
+    i = 0
+
     if let in hgword:       # Checks if clicked button's letter is in the random chosen word.
         for elem in hgword: # Iterates through every character in the string (random chosen word)
             if elem == let: # Compares clicked button's letter with the current character in the string.
@@ -93,13 +94,12 @@ def click_btn(let):
                 btn["state"] = DISABLED
         if win_count == len(hgword):    # Winning condition.
             if messagebox.askyesno(title="You won!", message="You won, do you want to retry?") == False:
-                window.destroy()
-            else:
-                new_game()
-    else:
+                window.destroy() # Creates a pop up window that asks user if he wants to retry another game.
+            else:                # If not, then it will close the program.
+                new_game()  # Will start a new game if clicked 'Yes'
+    else:   # If the clicked button's letter is not in the random chosen word.
         lives -= 1
-        print(lives)
-        hg_place()
+        hg_place() # "Changes" hangman image to the next one, according to how many lives the user has left.
         for btn in btn_lst:
             if btn["text"].lower() == let:
                 btn["state"] = DISABLED
@@ -109,45 +109,43 @@ def click_btn(let):
             else:
                 new_game()
 
-def hg_place():
+def hg_place(): # This function changes the hangman image every time it's called.
     global hg_list
     global hg_img
     global img_nr
 
     img_nr += 1
-    if img_nr < 9:
+    if img_nr < 9: # img_nr was always going above 8 (max index) so I had to put something to limit it to max 8.
         hg_img.configure(image = hg_list[img_nr])
+    else:
+        return
 
-def new_game():
+def new_game(): # So many global variables.. this looks terrible.
     global lives
     global win_count
     global hgword
     global lbl_list
     global btn_lst
     global x_lbl
+    global hg_img
+    global hg_list
+    global img_nr
 
-    for i in range (len(hgword)):
-        lbl_list[i].configure(text="_")
-    s = ranword()
-    if len(s) > len(hgword):
-        i = len(hgword)
-        while i <= len(s):
-            lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
-            lbl_list[-1].place(x=x_lbl, y=300)
-            x_lbl += 50
-            i += 1
-    else:
-        i = len(s)
-        while i <= len(hgword):
-            lbl_list.pop()
-            i += 1
-
-    for btn in btn_lst:
+    for lbl in lbl_list: # Destroying the old "_" characters.
+        lbl.destroy()
+    lbl_list.clear() # Clearing the lit to add the new "_" characters based on new random word length.
+    hgword = ranword() # Choosing new random word.
+    x_lbl = 200
+    for i in range(len(hgword)): # Adding the new "_" characters as labels to the label list variable.
+        lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
+        lbl_list[-1].place(x=x_lbl, y=300)
+        x_lbl += 50
+    for btn in btn_lst: # Resetting buttons to their default state.
         btn["state"] = NORMAL
-    hgword = ranword()
     lives = 8
     win_count = 0
-    i = 0
+    img_nr = 0
+    hg_img.configure(image = hg_list[img_nr]) # Resetting the hangman image to its first state.
 
 
 print(hgword)
