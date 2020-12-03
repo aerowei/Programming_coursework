@@ -11,9 +11,18 @@ window.geometry("800x800")
 
 # Global variables that I'll use in the program
 win_count = 0
-lives = 5
+lives = 8
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] # List with ASCII uppercase letters.
+
+# Creating a list of hangman images, and placing the first image.
+hg_list = []
+for i in range(1,10):
+    s = "hg" + str(i) + ".png"
+    hg_list.append(PhotoImage(file=s))
+hg_img = Label(window,image=hg_list[0])
+hg_img.place(x = 100, y = 100)
+img_nr = 0 # Indicate which picture number it is now.
 
 # Open the file wordlist.txt for reading and read the first line, removing all the whitespaces at beginning and end and
 # turning all characters to lowercase
@@ -40,7 +49,7 @@ lbl_list = []
 x_lbl = 200
 for i in range(len(hgword)):
     lbl_list.append(Label(window,text='_',font=('Arial',40,'bold')))
-    lbl_list[-1].place(x=x_lbl,y=200)
+    lbl_list[-1].place(x=x_lbl,y=300)
     x_lbl += 50
 
 # Create buttons
@@ -57,7 +66,7 @@ y_btn = 400
 btn_lst = [] # Actual list containing each button.
 # This loop creates each button, adds it to the list and then places them on the screen.
 for alpha in alphabet:
-    btn_lst.append(Button(window, text=alpha, font=('Arial',20,'bold'),\
+    btn_lst.append(Button(window, text=alpha, font=('Arial',15,'bold'),\
                           command=lambda c=alpha.lower(): click_btn(c))) # Using c=alpha to store it for each iteration.
     btn_lst[-1].place(x=x_btn,y=y_btn)
     x_btn += 40
@@ -73,10 +82,10 @@ def click_btn(let):
     global win_count
     global lives
     if let in hgword:       # Checks if letter is in the random chosen word.
-        win_count += 1
         for elem in hgword: # Iterates through every character in the string (random chosen word)
             if elem == let:
                 lbl_list[i].configure(text=let) # Swaps the text in the labels with "_" to corresponding letter.
+                win_count += 1
             i += 1
         for btn in btn_lst: # Finds the button with the letter and disables it.
             if btn["text"].lower() == let:
@@ -86,12 +95,26 @@ def click_btn(let):
             window.destroy()
     else:
         lives -= 1
-        print('Wrong!')
+        print(lives)
+        hg_place()
         for btn in btn_lst:
             if btn["text"].lower() == let:
                 btn["state"] = DISABLED
-        if lives < 0:   # Losing condition
+        if lives == 0:   # Losing condition
             print('You lose!')
-            window.destroy()
+          #  window.destroy()
+
+
+def hg_place():
+    global lives
+    global hg_list
+    global hg_img
+    global img_nr
+
+    img_nr += 1
+    if img_nr < 9:
+        hg_img.configure(image = hg_list[img_nr])
+
+
 print(hgword)
 window.mainloop()
