@@ -82,9 +82,9 @@ def click_btn(let):
     i = 0
     global win_count
     global lives
-    if let in hgword:       # Checks if letter is in the random chosen word.
+    if let in hgword:       # Checks if clicked button's letter is in the random chosen word.
         for elem in hgword: # Iterates through every character in the string (random chosen word)
-            if elem == let:
+            if elem == let: # Compares clicked button's letter with the current character in the string.
                 lbl_list[i].configure(text=let) # Swaps the text in the labels with "_" to corresponding letter.
                 win_count += 1
             i += 1
@@ -92,9 +92,10 @@ def click_btn(let):
             if btn["text"].lower() == let:
                 btn["state"] = DISABLED
         if win_count == len(hgword):    # Winning condition.
-            messagebox.askyesno(title="You won!", message="You won, do you want to retry?")
-            print('You win!')
-            window.destroy()
+            if messagebox.askyesno(title="You won!", message="You won, do you want to retry?") == False:
+                window.destroy()
+            else:
+                new_game()
     else:
         lives -= 1
         print(lives)
@@ -106,10 +107,7 @@ def click_btn(let):
             if messagebox.askyesno(title="You lost!", message="You lost, do you want to retry?") == False:
                 window.destroy()
             else:
-                print("test")
-           # print('You lose!')
-          #  window.destroy()
-
+                new_game()
 
 def hg_place():
     global hg_list
@@ -120,21 +118,36 @@ def hg_place():
     if img_nr < 9:
         hg_img.configure(image = hg_list[img_nr])
 
-def retry():
+def new_game():
     global lives
     global win_count
     global hgword
     global lbl_list
     global btn_lst
+    global x_lbl
 
+    for i in range (len(hgword)):
+        lbl_list[i].configure(text="_")
+    s = ranword()
+    if len(s) > len(hgword):
+        i = len(hgword)
+        while i <= len(s):
+            lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
+            lbl_list[-1].place(x=x_lbl, y=300)
+            x_lbl += 50
+            i += 1
+    else:
+        i = len(s)
+        while i <= len(hgword):
+            lbl_list.pop()
+            i += 1
+
+    for btn in btn_lst:
+        btn["state"] = NORMAL
     hgword = ranword()
     lives = 8
     win_count = 0
     i = 0
-    for i in range (len(hgword)):
-        lbl_list[i].configure(text="_")
-    for btn in btn_lst:
-        btn["state"] = NORMAL
 
 
 print(hgword)
