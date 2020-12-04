@@ -4,6 +4,7 @@
 import random
 from tkinter import *
 from tkinter import messagebox
+from PIL import Image, ImageTk
 
 # Setting up the tkinter window.
 window = Tk()
@@ -20,9 +21,12 @@ alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
 hg_list = []
 for i in range(1, 10):
     s = "hg" + str(i) + ".png"
-    hg_list.append(PhotoImage(file=s))
+    image = Image.open(s)
+    image = image.resize((250, 250), Image.ANTIALIAS)
+    hg_list.append(ImageTk.PhotoImage(image))
+
 hg_img = Label(window, image=hg_list[0])
-hg_img.place(x=100, y=100)
+hg_img.place(x=50, y=100)
 img_nr = 0 # Indicate which picture number it is now.
 
 # Open the file wordlist.txt for reading and read the first line, removing all the whitespaces at beginning and end and
@@ -47,10 +51,10 @@ hgword = ranword()
 
 # Create labels and append them to lbl_list, each label containing "_" character as text, then place them on the screen.
 lbl_list = []
-x_lbl = 200
+x_lbl = 150
 for i in range(len(hgword)):
-    lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
-    lbl_list[-1].place(x=x_lbl, y=300)
+    lbl_list.append(Label(window, text='_', font=('Arial', 50, 'bold')))
+    lbl_list[-1].place(x=x_lbl, y=400)
     x_lbl += 50
 
 # Create buttons
@@ -61,19 +65,19 @@ for i in range(len(hgword)):
 #              ['V',250,200],['W',250,200],['X',250,200],['Y',250,200],['Z',250,200]]
 
 # Creating x and y coordinate variable for buttons. Will be used to determine their position.
-x_btn = 300
-y_btn = 400
+x_btn = 100
+y_btn = 500
 
 btn_lst = [] # Actual list containing each button.
 # This loop creates each button, adds it to the list and then places them on the screen.
 for alpha in alphabet:
-    btn_lst.append(Button(window, text=alpha, font=('Arial',15,'bold'),
+    btn_lst.append(Button(window, text=alpha, font=('Arial',25,'bold'),
                           command=lambda c=alpha.lower(): click_btn(c))) # Using c=alpha to store it for each iteration.
     btn_lst[-1].place(x=x_btn,y=y_btn)
-    x_btn += 40
+    x_btn += 65
     if x_btn > 650:
-        y_btn += 55
-        x_btn = 300
+        y_btn += 90
+        x_btn = 100
 
 # The main function that the buttons will use. Will check if the clicked button's letter is in the random word, and
 # add win_count if letter is in the word or subtract lives if the letter isn't. Clicking on the button will also
@@ -86,7 +90,7 @@ def click_btn(let):
     if let in hgword:       # Checks if clicked button's letter is in the random chosen word.
         for elem in hgword: # Iterates through every character in the string (random chosen word)
             if elem == let: # Compares clicked button's letter with the current character in the string.
-                lbl_list[i].configure(text=let) # Swaps the text in the labels with "_" to corresponding letter.
+                lbl_list[i].configure(text=let.upper()) # Swaps the text in the labels with "_" to corresponding letter.
                 win_count += 1
             i += 1
         for btn in btn_lst: # Finds the button with the letter and disables it.
@@ -135,10 +139,10 @@ def new_game(): # So many global variables.. this looks terrible.
         lbl.destroy()
     lbl_list.clear() # Clearing the lit to add the new "_" characters based on new random word length.
     hgword = ranword() # Choosing new random word.
-    x_lbl = 200
+    x_lbl = 150 # I wasn't sure how to change the number of "_" characters, so I just re-create them everytime.
     for i in range(len(hgword)): # Adding the new "_" characters as labels to the label list variable.
         lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
-        lbl_list[-1].place(x=x_lbl, y=300)
+        lbl_list[-1].place(x=x_lbl, y=400)
         x_lbl += 50
     for btn in btn_lst: # Resetting buttons to their default state.
         btn["state"] = NORMAL
