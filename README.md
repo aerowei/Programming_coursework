@@ -1,6 +1,8 @@
 # Hangman game 
 Basic hangman game in Python done using Tkinter. Part of my Programming module's coursework (Exercise nr. 3).
 
+![](https://github.com/aerowei/Programming_coursework/blob/master/python_JHIfOL6TVd.png)
+
 ## Getting started
 
 ### Prerequisites 
