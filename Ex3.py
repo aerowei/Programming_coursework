@@ -40,7 +40,9 @@ word = file.readline().strip().lower() # Reads the first line, removes whitespac
 
 # Loop through each line, one at a time, and add each word to the 'words' list.
 while word: # Note for this loop - I can include a 'difficulty' maybe later.
-    if word.isalpha(): # I use .isalpha() because there are some words with special characters(too lazy to remove them)
+    if word.isalpha() and len(word) < 9:
+        # I use .isalpha() because there are some words with special characters(too lazy to remove them).
+        # Used a max length of 9 characters as some words are just too hard and long.
         words.append(word)
     word = file.readline().strip().lower()
 
@@ -54,11 +56,11 @@ hgword = ranword()
 
 # Create labels, append them to lbl_list, each label containing "_" character as text, then place them on the screen.
 lbl_list = []
-x_lbl = 150 # X coordinate of the leftmost "_" character.
+x_lbl = 100 # X coordinate of the leftmost "_" character.
 for i in range(len(hgword)): # This loop creates a number of text labels with "_" according to the random word's length.
-    lbl_list.append(Label(window, text='_', font=('Arial', 50, 'bold')))
+    lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
     lbl_list[-1].place(x=x_lbl, y=400) # Displays the latest added label to the list on the screen.
-    x_lbl += 50
+    x_lbl += 55
 
 # Creating starting x and y coordinate variable for buttons. Will be used to generate the buttons.
 x_btn = 100
@@ -136,11 +138,11 @@ def new_game(): # So many global variables.. this looks terrible.
         lbl.destroy()
     lbl_list.clear() # Clearing the list to add the new "_" characters based on new random word length.
     hgword = ranword() # Choosing new random word.
-    x_lbl = 150 # I wasn't sure how to change the number of "_" labels, so I just re-create them everytime.
+    x_lbl = 100 # I wasn't sure how to change the number of "_" labels, so I just re-create them everytime.
     for i in range(len(hgword)): # Adding the new "_" labels to the label list variable.
         lbl_list.append(Label(window, text='_', font=('Arial', 40, 'bold')))
         lbl_list[-1].place(x=x_lbl, y=400)
-        x_lbl += 50
+        x_lbl += 55
     for btn in btn_lst: # Resetting buttons to their default state.
         btn["state"] = NORMAL
     lives = 8 # Resetting lives, win_count and img_nr variables to their 'initial' states.
@@ -148,6 +150,12 @@ def new_game(): # So many global variables.. this looks terrible.
     img_nr = 0
     hg_img.configure(image = hg_list[img_nr]) # Resetting the hangman image to its first state.
 
+# Button will exit the program upon press.
+exit_button = Button(window, text="Exit", font=('Arial',15,'bold'), command=lambda : window.destroy())
+exit_button.place(x=700,y=50)
 
-print(hgword)
+# Button will start a new game upon press
+retry_button = Button(window, text="Start new game", font=('Arial',15,'bold'), command=new_game)
+retry_button.place(x=525,y=50)
+
 window.mainloop()
