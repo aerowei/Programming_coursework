@@ -24,13 +24,13 @@ Most of the modules used in this project, Tkinter and random are already pre-ins
 However, it is still necessary to install PIL: 
 
 ```
-python3 -m pip install -U PIL --user
+python3 -m pip install -U Pillow --user
 ```
 
 For Windows users, open a command prompt and type: (make sure you have added Python to your PATH variable!)
 
 ```
-pip install PIL
+pip install Pillow
 ```
 
 # Running the program
